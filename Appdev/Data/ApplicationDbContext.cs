@@ -9,6 +9,13 @@ namespace AppDev.Data
             : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            SeedData.SeedRole(builder);
+        }
     }
     
 }
