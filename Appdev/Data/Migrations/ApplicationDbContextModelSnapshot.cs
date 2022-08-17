@@ -17,7 +17,7 @@ namespace AppDev.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.8")
+                .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -47,26 +47,6 @@ namespace AppDev.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "f7ac1b11-e41c-4e00-b8e5-5860b366598b",
-                            ConcurrencyStamp = "141ff3ee-5e77-46e8-a0d2-d3413e551266",
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = "f1300c40-295c-4479-9b85-2a53ae4f93bd",
-                            ConcurrencyStamp = "aa61d693-91e8-437a-bfbd-6ca29de30dd5",
-                            Name = "StoreOwner"
-                        },
-                        new
-                        {
-                            Id = "b1fdb5aa-01b4-4914-96cf-3473e5d91ff4",
-                            ConcurrencyStamp = "f69bdaa4-77f8-4700-88ac-6e7405ca97a2",
-                            Name = "Customer"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
