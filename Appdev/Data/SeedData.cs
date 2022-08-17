@@ -17,6 +17,8 @@ namespace AppDev.Data
             var admin = new ApplicationUser("admin@g.c")
             {
                 EmailConfirmed = true,
+                Address = "",
+                FullName = "Administrator"
             };
 
             if (await userManager.FindByNameAsync(admin.UserName) == null)
