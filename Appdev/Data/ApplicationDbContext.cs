@@ -13,8 +13,6 @@ namespace AppDev.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            SeedData.SeedRole(builder);
         }
     }
     

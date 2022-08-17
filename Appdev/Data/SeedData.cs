@@ -5,13 +5,28 @@ namespace AppDev.Data
 {
     public class SeedData
     {
-        public static void SeedRole(ModelBuilder builder)
+        public static async Task SeedRoleAsync(RoleManager<IdentityRole> roleManager)
         {
-            builder.Entity<IdentityRole>()
-                .HasData(
-                    new IdentityRole(Role.Admin),
-                    new IdentityRole(Role.StoreOwner),
-                    new IdentityRole(Role.Customer));
+            await roleManager.CreateAsync(new IdentityRole(Role.Admin));
+            await roleManager.CreateAsync(new IdentityRole(Role.StoreOwner));
+            await roleManager.CreateAsync(new IdentityRole(Role.Customer));
+        }
+
+        public static async Task SeedUsersAsync(UserManager<IdentityUser> userManager)
+        {
+            var admin = new IdentityUser()
+            {
+                UserName = "admin@g.c",
+                Email = "admin@g.c",
+                EmailConfirmed = true,
+            };
+
+            if (await userManager.FindByNameAsync(admin.UserName) == null)
+            {
+                await userManager.CreateAsync(admin, "Abc@1234");
+
+                await userManager.AddToRoleAsync(admin, Role.Admin);
+            }
         }
     }
 }
