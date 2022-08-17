@@ -10,6 +10,8 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using AppDev.Data;
+using AppDev.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +19,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace AppDev.Areas.Identity.Pages.Account
@@ -25,6 +28,7 @@ namespace AppDev.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
@@ -39,6 +43,7 @@ namespace AppDev.Areas.Identity.Pages.Account
             IEmailSender emailSender)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
@@ -76,7 +81,13 @@ namespace AppDev.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
+            [Display(Name = "Full name")]
+            [StringLength(100)]
+            public string FullName { get; set; }
+
+            [Required]
             [EmailAddress]
+            [StringLength(256)]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
@@ -98,13 +109,22 @@ namespace AppDev.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [StringLength(20, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.")]
+            public string Role { get; set; }
+
+            [Required]
+            [StringLength(200, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            public string Address { get; set; }
         }
 
+        public IList<string> Roles { get; private set; } = new List<string>(){ Role.Customer, Role.StoreOwner };
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();            
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -115,13 +135,31 @@ namespace AppDev.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
+                if (!Roles.Contains(Input.Role))
+                {
+                    ModelState.AddModelError("", $"Cannot create account with role '{Input.Role}'.");
+                    return Page();
+                }
+
+                var role = await _roleManager.FindByNameAsync(Input.Role);
+
+                if (role == null)
+                {
+                    ModelState.AddModelError("", $"Role '{Input.Role}' does not esist.");
+                    return Page();
+                }
+
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                user.Address = Input.Address;
+                user.FullName = Input.FullName;
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    await _userManager.AddToRoleAsync(user, role.Name);
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -155,7 +193,9 @@ namespace AppDev.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IdentityUser CreateUser()
+        // Truong
+
+        private ApplicationUser CreateUser()
         {
             try
             {
