@@ -11,6 +11,8 @@ namespace AppDev.Data
         {
         }
 
+        public DbSet<Book> Books { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
