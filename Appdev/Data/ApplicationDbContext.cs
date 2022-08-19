@@ -15,6 +15,8 @@ namespace AppDev.Data
 
         public DbSet<Category> Categories { get; set; } = null!;
 
+        public DbSet<CartItem> CartItems { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -23,7 +25,11 @@ namespace AppDev.Data
             {
                 o.HasIndex(c => c.Name).IsUnique();
             });
+
+            builder.Entity<CartItem>(o =>
+            {
+                o.HasKey(ci => new { ci.BookId, ci.UserId });
+            });
         }
     }
-    
 }
