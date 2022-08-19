@@ -18,5 +18,9 @@ namespace AppDev.Models
 
         [Range(0, double.MaxValue)]
         public double Price { get; set; }
+
+        public int CategoryId { get; set; }
+
+        public Category Category { get; set; } = null!;
     }
 }
