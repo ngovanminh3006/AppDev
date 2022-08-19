@@ -7,6 +7,9 @@ namespace AppDev.Models
     {
         public int Id { get; set; }
 
+        public string StoreOwnerId { get; set; } = null!;
+        public ApplicationUser StoreOwner { get; set; } = null!;
+
         [StringLength(100)]
         public string Title { get; set; } = null!;
 
