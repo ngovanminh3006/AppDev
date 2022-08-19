@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using AppDev.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace AppDev.Data
 {
@@ -12,13 +12,13 @@ namespace AppDev.Data
             await roleManager.CreateAsync(new IdentityRole(Role.Customer));
         }
 
-        public static async Task SeedUsersAsync(UserManager<IdentityUser> userManager)
+        public static async Task SeedUsersAsync(UserManager<ApplicationUser> userManager)
         {
-            var admin = new IdentityUser()
+            var admin = new ApplicationUser("admin@g.c")
             {
-                UserName = "admin@g.c",
-                Email = "admin@g.c",
                 EmailConfirmed = true,
+                Address = "",
+                FullName = "Administrator"
             };
 
             if (await userManager.FindByNameAsync(admin.UserName) == null)
