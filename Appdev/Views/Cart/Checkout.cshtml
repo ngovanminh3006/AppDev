@@ -32,10 +32,6 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.TotalPrice)
                 </td>
-                <td>
-                    <a asp-action="Details" asp-controller="Books" asp-route-id="@item.BookId">Details</a> |
-                    <a asp-action="Remove" asp-route-id="@item.BookId">Remove</a>
-                </td>
             </tr>
         }
     </tbody>
@@ -45,9 +41,9 @@
             <th>@Model.TotalQuantity</th>
             <th></th>
             <th>@Model.TotalPrice</th>
-            <th>
-                <a asp-action="Checkout">Checkout</a>
-            </th>
         </tr>
     </tfoot>
 </table>
+<form method="Post">
+    <button type="submit" class="btn btn-primary">Checkout</button>
+</form>
