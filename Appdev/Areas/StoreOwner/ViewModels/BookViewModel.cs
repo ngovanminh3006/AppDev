@@ -1,14 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using AppDev.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
-namespace AppDev.Models
+namespace AppDev.Areas.StoreOwner.ViewModels
 {
-    public class Book
+    public class BookViewModel
     {
         public int Id { get; set; }
-
-        public string StoreOwnerId { get; set; } = null!;
-        public ApplicationUser StoreOwner { get; set; } = null!;
 
         [StringLength(100)]
         public string Title { get; set; } = null!;
@@ -22,8 +20,10 @@ namespace AppDev.Models
         [Range(0, double.MaxValue)]
         public double Price { get; set; }
 
+        [Display(Name = "Category")]
         public int CategoryId { get; set; }
 
-        public Category Category { get; set; } = null!;
+        [ValidateNever]
+        public ICollection<Category> Categories { get; set; } = null!;
     }
 }

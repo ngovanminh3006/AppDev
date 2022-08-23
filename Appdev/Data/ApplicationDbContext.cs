@@ -30,6 +30,14 @@ namespace AppDev.Data
             {
                 o.HasKey(ci => new { ci.BookId, ci.UserId });
             });
+
+            // remove on cascade of table User to avoid multiple cascade delete paths.
+            builder.Entity<Book>(o =>
+            {
+                o.HasOne(b => b.StoreOwner)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+            });
         }
     }
 }
