@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AppDev.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AppDev.Data;
-using AppDev.Models;
 
-namespace AppDev.Views
+namespace AppDev.Controllers
 {
     public class BooksController : Controller
     {
