@@ -56,7 +56,7 @@ namespace AppDev.Areas.Admin.Controllers
             if (request == null)
                 return NotFound();
 
-            if (request.IsApproval == true)
+            if (request.IsApproval != null)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -125,11 +125,6 @@ namespace AppDev.Areas.Admin.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool NewCategoryRequestExists(int id)
-        {
-            return (context.NewCategoryRequests?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
