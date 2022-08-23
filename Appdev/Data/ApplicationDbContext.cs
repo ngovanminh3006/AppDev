@@ -17,6 +17,10 @@ namespace AppDev.Data
 
         public DbSet<CartItem> CartItems { get; set; } = null!;
 
+        public DbSet<Order> Orders { get; set; } = null!;
+
+        public DbSet<OrderItem> OrderItems { get; set; } = null!;
+
         public DbSet<NewCategoryRequest> NewCategoryRequests { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -38,12 +42,28 @@ namespace AppDev.Data
                 o.HasKey(ci => new { ci.BookId, ci.UserId });
             });
 
+            builder.Entity<OrderItem>(o =>
+            {
+                o.HasKey(oi => new { oi.BookId, oi.OrderId });
+            });
+
             // remove on cascade of table User to avoid multiple cascade delete paths.
             builder.Entity<Book>(o =>
             {
                 o.HasOne(b => b.StoreOwner)
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<Order>(o =>
+            {
+                o.HasOne(b => b.StoreOwner)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                o.HasOne(b => b.Customer)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.NoAction);
             });
         }
     }
