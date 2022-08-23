@@ -1,6 +1,7 @@
 ﻿using AppDev.Areas.StoreOwner.ViewModels;
 using AppDev.Data;
 using AppDev.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +9,16 @@ using Microsoft.EntityFrameworkCore;
 namespace AppDev.Areas.StoreOwner.Controllers
 {
     [Area("StoreOwner")]
+    [Authorize(Roles = Role.StoreOwner)]
     public class BooksController : Controller
     {
         private readonly ApplicationDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
+
+        private string GetCurrentOwnerId()
+        {
+            return userManager.GetUserId(User);
+        }
 
         public BooksController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
@@ -22,8 +29,11 @@ namespace AppDev.Areas.StoreOwner.Controllers
         // GET: StoreOwner/Books
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = context.Books.Include(b => b.Category);
-            return View(await applicationDbContext.ToListAsync());
+            var currentOwnerId = GetCurrentOwnerId();
+            var books = context.Books
+                .Include(b => b.Category)
+                .Where(b => b.StoreOwnerId == currentOwnerId);
+            return View(await books.ToListAsync());
         }
 
         // GET: StoreOwner/Books/Details/5
@@ -92,7 +102,9 @@ namespace AppDev.Areas.StoreOwner.Controllers
                 return NotFound();
             }
 
-            var book = await context.Books.FindAsync(id);
+            var currentOwnerId = GetCurrentOwnerId();
+            var book = await context.Books.FirstOrDefaultAsync(b => b.Id == id && b.StoreOwnerId == currentOwnerId);
+
             if (book == null)
             {
                 return NotFound();
@@ -120,6 +132,12 @@ namespace AppDev.Areas.StoreOwner.Controllers
         public async Task<IActionResult> Edit(int id, BookViewModel model)
         {
             if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            var currentOwnerId = GetCurrentOwnerId();
+            if (!await context.Books.AnyAsync(b => b.Id == id && b.StoreOwnerId == currentOwnerId))
             {
                 return NotFound();
             }
@@ -167,9 +185,11 @@ namespace AppDev.Areas.StoreOwner.Controllers
                 return NotFound();
             }
 
+            var currentOwnerId = GetCurrentOwnerId();
             var book = await context.Books
                 .Include(b => b.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id && m.StoreOwnerId == currentOwnerId);
+
             if (book == null)
             {
                 return NotFound();
@@ -183,6 +203,7 @@ namespace AppDev.Areas.StoreOwner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+
             if (context.Books == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Books' is null.");
@@ -190,7 +211,16 @@ namespace AppDev.Areas.StoreOwner.Controllers
             var book = await context.Books.FindAsync(id);
             if (book != null)
             {
-                context.Books.Remove(book);
+                var currentOwnerId = GetCurrentOwnerId();
+
+                if (book.StoreOwnerId == currentOwnerId)
+                {
+                    context.Books.Remove(book);
+                }
+                else
+                {
+                    return Unauthorized("Cannot delete book of another store");
+                }
             }
 
             await context.SaveChangesAsync();
