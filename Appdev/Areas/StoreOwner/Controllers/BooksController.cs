@@ -20,6 +20,11 @@ namespace AppDev.Areas.StoreOwner.Controllers
             return userManager.GetUserId(User);
         }
 
+        private async Task<List<Category>> GetActiveCategoriesAsync()
+        {
+            return await context.Categories.Where(c => c.IsActive == true).ToListAsync();
+        }
+
         public BooksController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             this.context = context;
@@ -61,7 +66,7 @@ namespace AppDev.Areas.StoreOwner.Controllers
         {
             var model = new BookViewModel()
             {
-                Categories = await context.Categories.ToListAsync(),
+                Categories = await GetActiveCategoriesAsync(),
             };
 
             return View(model);
@@ -90,7 +95,7 @@ namespace AppDev.Areas.StoreOwner.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            model.Categories = await context.Categories.ToListAsync();
+            model.Categories = await GetActiveCategoriesAsync();
             return View(model);
         }
 
@@ -118,7 +123,7 @@ namespace AppDev.Areas.StoreOwner.Controllers
                 Description = book.Description,
                 Price = book.Price,
                 CategoryId = book.CategoryId,
-                Categories = await context.Categories.ToListAsync(),
+                Categories = await GetActiveCategoriesAsync(),
             };
 
             return View(model);
@@ -173,7 +178,7 @@ namespace AppDev.Areas.StoreOwner.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            model.Categories = await context.Categories.ToListAsync();
+            model.Categories = await GetActiveCategoriesAsync();
             return View(model);
         }
 
