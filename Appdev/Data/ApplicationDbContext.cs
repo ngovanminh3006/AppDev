@@ -17,11 +17,18 @@ namespace AppDev.Data
 
         public DbSet<CartItem> CartItems { get; set; } = null!;
 
+        public DbSet<NewCategoryRequest> NewCategoryRequests { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.Entity<Category>(o =>
+            {
+                o.HasIndex(c => c.Name).IsUnique();
+            });
+
+            builder.Entity<NewCategoryRequest>(o =>
             {
                 o.HasIndex(c => c.Name).IsUnique();
             });

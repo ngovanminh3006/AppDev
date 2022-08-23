@@ -1,0 +1,56 @@
+﻿@model NewCategoryRequestApprovalViewModel
+
+@{
+	ViewData["Title"] = "Approval";
+}
+
+<h1>Approval</h1>
+
+<h4>NewCategoryRequest</h4>
+<hr />
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="Approval">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="Id" />
+			<input type="hidden" asp-for="StoreOwnerId" />
+
+			<div class="form-group">
+				<label asp-for="Name" class="control-label"></label>
+				<input asp-for="Name" class="form-control" readonly />
+			</div>
+			<div class="form-group">
+				<label asp-for="StoreOwnerFullName" class="control-label"></label>
+				<input asp-for="StoreOwnerFullName" class="form-control" disabled />
+			</div>
+
+			<div class="form-group">
+				<label class="control-label">Action</label>
+				<select asp-for="IsApproval" class="form-select">
+					<option></option>
+					<option value="true">Approval</option>
+					<option value="false">Reject</option>
+				</select>
+				<span asp-validation-for="IsApproval" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Message" class="control-label"></label>
+				<textarea asp-for="Message" class="form-control"></textarea>
+				<span asp-validation-for="Message" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Save" class="btn btn-primary" />
+			</div>
+		</form>
+	</div>
+</div>
+
+<div>
+	<a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+	await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}
