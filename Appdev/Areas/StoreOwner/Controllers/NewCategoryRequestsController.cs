@@ -1,6 +1,7 @@
 ﻿using AppDev.Data;
 using AppDev.Models;
 using AppDev.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AppDev.Areas.StoreOwner.Controllers
 {
     [Area("StoreOwner")]
+    [Authorize(Roles = Role.StoreOwner)]
     public class NewCategoryRequestsController : Controller
     {
         private readonly ApplicationDbContext context;
