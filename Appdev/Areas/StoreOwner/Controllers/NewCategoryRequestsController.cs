@@ -30,8 +30,8 @@ namespace AppDev.Areas.StoreOwner.Controllers
             var userId = GetCurrentUserId();
 
             var requests = await context.NewCategoryRequests
-                .Where(x => x.StoreOwnerId == userId).
-                ToListAsync();
+                .Where(x => x.StoreOwnerId == userId)
+                .ToListAsync();
 
             return View(requests);
         }
