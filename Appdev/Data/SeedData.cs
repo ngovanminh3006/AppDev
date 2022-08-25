@@ -18,7 +18,8 @@ namespace AppDev.Data
             {
                 EmailConfirmed = true,
                 Address = "",
-                FullName = "Administrator"
+                FullName = "Administrator",
+                Email = "admin@g.c",
             };
 
             if (await userManager.FindByNameAsync(admin.UserName) == null)
