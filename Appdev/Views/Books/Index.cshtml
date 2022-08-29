@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Book>
+﻿@model BookIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -10,25 +10,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                Title
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Isbn)
+                Isbn
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Description
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                Price
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
+                Category
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Books)
         {
             <tr>
                 <td>
@@ -54,3 +54,7 @@
         }
     </tbody>
 </table>
+
+@section Search{
+    <partial name="_SearchPartial" model="Model.SearchViewModel" />
+}

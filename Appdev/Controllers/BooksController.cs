@@ -1,4 +1,5 @@
 ﻿using AppDev.Data;
+using AppDev.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,12 +15,28 @@ namespace AppDev.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(SearchViewModel searchModel)
         {
-            var books = await context.Books
-                .Include(b => b.Category)
-                .ToListAsync();
-            return View(books);
+            var query = context.Books.Include(b => b.Category).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchModel.Keyword))
+            {
+                searchModel.Keyword = searchModel.Keyword.Trim();
+                string keyword = searchModel.Keyword.ToLower();
+
+                query = query
+                    .Where(b => b.Title.ToLower().Contains(keyword)
+                    || b.Category.Name.ToLower().Contains(keyword));
+            }
+            var books = await query.ToListAsync();
+
+            var model = new BookIndexViewModel()
+            {
+                Books = books,
+                SearchViewModel = searchModel,
+            };
+
+            return View(model);
         }
 
         // GET: Books/Details/5
