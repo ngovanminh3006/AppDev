@@ -1,5 +1,7 @@
-﻿using AppDev.Data;
+﻿using AppDev.Areas.StoreOwner.ViewModels;
+using AppDev.Data;
 using AppDev.Models;
+using AppDev.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,15 +26,28 @@ namespace AppDev.Areas.StoreOwner.Controllers
             return userManager.GetUserId(User);
         }
         // GET: Orders
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(SearchViewModel searchModel)
         {
             var currentUserId = GetCurrentOwnerId();
 
-            var orders = await context.Orders
-                .Include(o => o.Customer)
-                .Where(o => o.StoreOwnerId == currentUserId)
-                .ToListAsync();
-            return View(orders);
+
+            var query = context.Orders.Include(b => b.Customer).AsQueryable()
+                .Where(o => o.StoreOwnerId == currentUserId);
+
+            if (!string.IsNullOrWhiteSpace(searchModel.Keyword))
+            {
+                searchModel.Keyword = searchModel.Keyword.Trim();
+                string normalizedEmail = searchModel.Keyword.ToUpper();
+                query = query
+                    .Where(b => b.Customer.NormalizedEmail.Contains(normalizedEmail));
+            }
+
+            var viewModel = new OrderIndexViewModel()
+            {
+                Orders = await query.ToListAsync(),
+            };
+
+            return View(viewModel);
         }
 
         // GET: Orders/Details/5

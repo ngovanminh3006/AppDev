@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AppDev.Models.Order>
+﻿@model OrderIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -13,16 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                Order
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Customer)
+                Customer
+            </th>
+            <th>
+                Email
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Orders)
         {
             <tr>
                 <td>
@@ -32,9 +35,16 @@
                     @Html.DisplayFor(modelItem => item.Customer.FullName)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.Customer.Email)
+                </td>
+                <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section Search{
+    <partial name="_SearchPartial" model="Model.SearchViewModel" />
+}
