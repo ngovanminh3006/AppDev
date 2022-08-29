@@ -13,7 +13,7 @@ namespace AppDev.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
-        
+
         private string GetCurrentUserId()
         {
             return userManager.GetUserId(User);
@@ -43,7 +43,7 @@ namespace AppDev.Controllers
                     Price = i.Book.Price,
                     TotalPrice = i.Book.Price * i.Quantity,
                     Description = i.Book.Description,
-                    Category = i.Book.Category, 
+                    Category = i.Book.Category,
                 })
                 .ToListAsync();
 
@@ -134,7 +134,7 @@ namespace AppDev.Controllers
             var currentUserId = GetCurrentUserId();
 
             var cartItems = await context.CartItems
-                .AsNoTracking()
+                //.AsNoTracking()
                 .Include(i => i.Book)
                 .ThenInclude(b => b.StoreOwner)
                 .Where(i => i.UserId == currentUserId)
@@ -154,8 +154,8 @@ namespace AppDev.Controllers
                 });
 
             var orders = ordersQuery.ToList();
-            context.AddRange(orders);
             context.RemoveRange(cartItems);
+            context.AddRange(orders);
 
             await context.SaveChangesAsync();
 
