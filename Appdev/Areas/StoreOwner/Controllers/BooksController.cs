@@ -1,6 +1,7 @@
 ﻿using AppDev.Areas.StoreOwner.ViewModels;
 using AppDev.Data;
 using AppDev.Models;
+using AppDev.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -31,14 +32,30 @@ namespace AppDev.Areas.StoreOwner.Controllers
             this.userManager = userManager;
         }
 
-        // GET: StoreOwner/Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(SearchViewModel searchModel)
         {
             var currentOwnerId = GetCurrentOwnerId();
-            var books = context.Books
-                .Include(b => b.Category)
+            var query = context.Books.Include(b => b.Category).AsQueryable()
                 .Where(b => b.StoreOwnerId == currentOwnerId);
-            return View(await books.ToListAsync());
+
+            if (!string.IsNullOrWhiteSpace(searchModel.Keyword))
+            {
+                searchModel.Keyword = searchModel.Keyword.Trim();
+                string keyword = searchModel.Keyword.ToLower();
+
+                query = query
+                    .Where(b => b.Title.ToLower().Contains(keyword)
+                    || b.Category.Name.ToLower().Contains(keyword));
+            }
+            var books = await query.ToListAsync();
+
+            var model = new BookIndexViewModel()
+            {
+                Books = books,
+                SearchViewModel = searchModel,
+            };
+
+            return View(model);
         }
 
         // GET: StoreOwner/Books/Details/5
