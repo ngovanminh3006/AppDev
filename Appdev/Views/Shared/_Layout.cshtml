@@ -34,6 +34,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="StoreOwner" asp-controller="NewCategoryRequests" asp-action="Index">Request new category</a>
                             </li>
+                               <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="StoreOwner" asp-controller="Orders" asp-action="Index">Orders</a>
+                            </li>
                         }
                         @if (User.IsInRole(AppDev.Data.Role.Admin))
                         {
