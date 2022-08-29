@@ -9,6 +9,10 @@ namespace AppDev.ViewModels
 
         public string BookTitle { get; set; } = null!;
 
+        public string Description { get; set; } = null!;
+
+        public Category Category { get; set; } = null!;
+
         public ApplicationUser StoreOwner { get; set; } = null!;
 
         public string UserId { get; set; } = null!;
