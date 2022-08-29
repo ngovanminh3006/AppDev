@@ -14,7 +14,7 @@
             @Html.DisplayNameFor(model => model.StoreOwner)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StoreOwner.Id)
+            @Html.DisplayFor(model => model.StoreOwner.FullName)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
@@ -44,7 +44,7 @@
             @Html.DisplayNameFor(model => model.Category)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Category.Id)
+            @Html.DisplayFor(model => model.Category.Name)
         </dd>
     </dl>
 </div>
