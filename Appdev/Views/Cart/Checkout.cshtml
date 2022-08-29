@@ -4,13 +4,15 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Checkout FPT Book</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>Book</th>
             <th>Quantity</th>
+            <th>Category</th>
+            <th>Description</th>
             <th>Price</th>
             <th>Total Price</th>
             <th></th>
@@ -26,12 +28,19 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Quantity)
                 </td>
+                  <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                  <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.TotalPrice)
                 </td>
+
             </tr>
         }
     </tbody>
@@ -43,7 +52,11 @@
             <th>@Model.TotalPrice</th>
         </tr>
     </tfoot>
+    <div>
+         <a asp-action="Index">Back to List</a>
+    </div>
 </table>
 <form method="Post">
     <button type="submit" class="btn btn-primary">Checkout</button>
+
 </form>

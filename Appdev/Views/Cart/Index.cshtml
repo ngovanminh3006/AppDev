@@ -4,13 +4,15 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Cart FPT Book</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>Book</th>
             <th>Quantity</th>
+            <th>Category</th>
+            <th>Description</th>
             <th>Price</th>
             <th>Total Price</th>
             <th></th>
@@ -25,6 +27,12 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                   <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                  <td>
+                    @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
@@ -50,4 +58,7 @@
             </th>
         </tr>
     </tfoot>
+    <div>
+         <a asp-action="Index" asp-controller="Books">Back to List </a>
+    </div>
 </table>
