@@ -42,6 +42,8 @@ namespace AppDev.Controllers
                     Quantity = i.Quantity,
                     Price = i.Book.Price,
                     TotalPrice = i.Book.Price * i.Quantity,
+                    Description = i.Book.Description,
+                    Category = i.Book.Category, 
                 })
                 .ToListAsync();
 
